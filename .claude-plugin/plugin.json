@@ -1,0 +1,23 @@
+{
+  "name": "openspec-setup",
+  "description": "Skills to set up OpenSpec (spec-driven development) in any project — greenfield or brownfield. Covers environment audit, CLAUDE.md and Copilot instructions generation, and guided OpenSpec initialization. Targets Claude Code and GitHub Copilot.",
+  "author": {
+    "name": "Jérémie Poutrin",
+    "email": "jpoutrin@productvista.fr"
+  },
+  "homepage": "https://github.com/jpoutrin/openspec-setup-plugin",
+  "repository": "https://github.com/jpoutrin/openspec-setup-plugin",
+  "license": "MIT",
+  "keywords": [
+    "openspec",
+    "spec-driven-development",
+    "setup",
+    "claude-code",
+    "copilot",
+    "lsp",
+    "mcp",
+    "agent-files",
+    "figma",
+    "design-to-code"
+  ]
+}
