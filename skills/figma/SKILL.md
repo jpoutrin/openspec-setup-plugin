@@ -12,6 +12,12 @@ description: >
   "connect Figma to Claude Code", "add design token rules to config.yaml", "how do I use Figma in my spec",
   "get design tokens from Figma", "which Figma MCP tool should I call", "add Figma frame to my proposal",
   "Code Connect with OpenSpec", or "enforce design tokens in my OpenSpec project".
+hooks:
+  PostToolUse:
+    - matcher: "Write"
+      hooks:
+        - type: command
+          command: "${CLAUDE_PLUGIN_ROOT}/hooks/validate-config.sh"
 ---
 
 # OpenSpec + Figma
@@ -131,9 +137,8 @@ Enable: `schema: design-first` in config.yaml.
 
 ## Step 7: Validate and update CLAUDE.md
 
-```bash
-openspec validate 2>/dev/null || cat openspec/config.yaml
-```
+`openspec validate` runs automatically via a skill hook after the config is written. If it reports
+errors, fix and rewrite the file — the hook re-validates automatically.
 
 Test rules are active: `/opsx:propose test-figma-setup` — the generated `proposal.md` should contain
 a "Design" section placeholder confirming `rules.proposal` is being injected.

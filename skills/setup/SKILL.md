@@ -8,6 +8,12 @@ description: >
   "configure OpenSpec", "bootstrap OpenSpec", "help me start with OpenSpec", or "how do I add OpenSpec to my project".
   Even if the user only mentions one aspect (e.g. "I just want the CLAUDE.md"), run the full wizard — the phases
   are short and the user can skip any step they've already done.
+hooks:
+  PostToolUse:
+    - matcher: "Write"
+      hooks:
+        - type: command
+          command: "${CLAUDE_PLUGIN_ROOT}/hooks/validate-config.sh"
 ---
 
 # OpenSpec Setup Wizard
@@ -300,14 +306,9 @@ Write the file only after confirmation.
 
 ### Step 3b: Validate `openspec/config.yaml`
 
-After writing the file, run:
-```bash
-openspec validate
-```
-
-If validation passes, continue. If it reports errors, show the exact output to the engineer, fix the
-offending lines (typically malformed YAML, an unknown key, or a missing required field), re-show the
-corrected file, and run `openspec validate` again before moving on.
+`openspec validate` runs automatically via a skill hook immediately after the file is written.
+If it reports errors, fix the offending lines (typically malformed YAML, an unknown key, or a missing
+required field), re-show the corrected file, and write it again — the hook re-validates automatically.
 
 ### Step 4: Key commands to know
 
