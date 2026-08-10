@@ -309,6 +309,14 @@ TypeScript), PHP, Ruby, or Elixir, you MUST automatically include the matching t
 Do not ask the engineer whether to include these — maximum typing strictness is always the right
 default for weakly typed languages and should be present unless the engineer explicitly removes it.
 
+**Apply guard (mandatory, always):** You MUST always include the following rule in `tasks:` for every project, regardless of stack:
+
+```yaml
+    - Never run /opsx:apply on a working tree with uncommitted changes — commit or stash all pending changes before applying a proposal.
+```
+
+Do not ask the engineer whether to include this — it prevents irreversible state corruption where an apply overwrites uncommitted work and must always be present.
+
 Show the full generated `config.yaml` and ask: _"Does this look right? I can adjust any section before writing."_
 
 Write the file only after confirmation.

@@ -88,6 +88,15 @@ ls CLAUDE.md .claude/CLAUDE.md .github/copilot-instructions.md 2>/dev/null || tr
 ls .git/hooks/pre-commit 2>/dev/null && head -3 .git/hooks/pre-commit || echo "NOT_FOUND"
 ```
 
+### Check 9: Apply guard rule in config.yaml
+
+```bash
+grep -c "opsx:apply" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
+```
+
+Verify that `openspec/config.yaml` contains the mandatory apply guard rule in its `tasks:` rules:
+`Never run /opsx:apply on a working tree with uncommitted changes`. If the file exists but the rule is absent, flag it as a gap — applying a proposal over uncommitted work can silently overwrite changes.
+
 Also check for hook managers (which replace raw `.git/hooks/`):
 ```bash
 # husky
@@ -150,6 +159,7 @@ this and have a complete picture.
 | Gate | Status | Notes |
 |------|--------|-------|
 | Pre-commit hook | ✅ `.git/hooks/pre-commit` / ✅ husky / ✅ lefthook / ✅ pre-commit / ❌ none | [what it checks, or "not configured"] |
+| Apply guard rule | ✅ present in `tasks:` rules / ❌ missing from config.yaml | Prevents `/opsx:apply` on uncommitted working tree |
 
 ## Action Items
 [Ordered by priority — each item is a single, actionable step:]
@@ -157,6 +167,8 @@ this and have a complete picture.
 2. ...
 [If pre-commit hook is missing, include:]
 - Install pre-commit quality gate (compile + tests): run `openspec:setup` Phase 3 Step 3c
+[If apply guard rule is missing from config.yaml tasks: rules, include:]
+- Add apply guard to `openspec/config.yaml` under `rules.tasks`: `Never run /opsx:apply on a working tree with uncommitted changes — commit or stash all pending changes before applying a proposal.`
 
 ---
 _Run `openspec:setup` to handle all of the above interactively._
