@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "openspec-setup",
+  "version": "1.0.0",
+  "description": "OpenSpec setup toolkit for Claude Code — spec-driven development in any project, greenfield or brownfield",
+  "owner": {
+    "name": "Jérémie Poutrin",
+    "email": "jpoutrin@productvista.fr",
+    "url": "https://github.com/jpoutrin"
+  },
+  "plugins": [
+    {
+      "name": "openspec-setup",
+      "description": "Skills to set up OpenSpec (spec-driven development) in any project — greenfield or brownfield. Covers environment audit, CLAUDE.md and Copilot instructions generation, guided OpenSpec initialization, and Figma design-system integration.",
+      "source": ".",
+      "category": "productivity"
+    }
+  ]
+}
