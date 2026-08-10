@@ -234,6 +234,8 @@ Tasks are the implementation checklist — ordered, atomic, paired with tests.
     - Put every new function/method under full type hints; keep functions under ~30 lines.
     - Finish each group with verification tasks (lint, typecheck, test suite).
     - Never run /opsx:apply on a working tree with uncommitted changes — commit or stash all pending changes before applying a proposal.
+    - Never run /opsx:sync on a working tree with uncommitted changes — commit or stash all pending changes before syncing specs.
+    - Never run /opsx:archive on a working tree with uncommitted changes — commit or stash all pending changes before archiving a change.
 ```
 
 **Stack-specific additions:**
@@ -307,7 +309,7 @@ Elixir:
 - [ ] Design rules name required sections explicitly
 - [ ] Specs rules enforce SHALL/MUST and Scenario format
 - [ ] Tasks rules pair code with tests and end each group with verification
-- [ ] Tasks rules include the apply-only-after-commit guard (`Never run /opsx:apply on a working tree with uncommitted changes`)
+- [ ] Tasks rules include the clean-repo guards for apply, sync, and archive (`Never run /opsx:apply / /opsx:sync / /opsx:archive on a working tree with uncommitted changes`)
 
 **Common mistakes to avoid**
 - Aspirational rules ("write clean code", "keep it simple") — too vague to enforce

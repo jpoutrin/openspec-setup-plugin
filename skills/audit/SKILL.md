@@ -88,14 +88,15 @@ ls CLAUDE.md .claude/CLAUDE.md .github/copilot-instructions.md 2>/dev/null || tr
 ls .git/hooks/pre-commit 2>/dev/null && head -3 .git/hooks/pre-commit || echo "NOT_FOUND"
 ```
 
-### Check 9: Apply guard rule in config.yaml
+### Check 9: Clean-repo guard rules in config.yaml
 
 ```bash
 grep -c "opsx:apply" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
+grep -c "opsx:sync" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
+grep -c "opsx:archive" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
 ```
 
-Verify that `openspec/config.yaml` contains the mandatory apply guard rule in its `tasks:` rules:
-`Never run /opsx:apply on a working tree with uncommitted changes`. If the file exists but the rule is absent, flag it as a gap — applying a proposal over uncommitted work can silently overwrite changes.
+Verify that `openspec/config.yaml` contains all three clean-repo guard rules in its `tasks:` rules — one each for `/opsx:apply`, `/opsx:sync`, and `/opsx:archive`. These commands mutate the working tree or produce artifacts from it; running them over uncommitted changes silently corrupts the change history. Flag each missing rule individually.
 
 Also check for hook managers (which replace raw `.git/hooks/`):
 ```bash
@@ -160,6 +161,8 @@ this and have a complete picture.
 |------|--------|-------|
 | Pre-commit hook | ✅ `.git/hooks/pre-commit` / ✅ husky / ✅ lefthook / ✅ pre-commit / ❌ none | [what it checks, or "not configured"] |
 | Apply guard rule | ✅ present in `tasks:` rules / ❌ missing from config.yaml | Prevents `/opsx:apply` on uncommitted working tree |
+| Sync guard rule | ✅ present in `tasks:` rules / ❌ missing from config.yaml | Prevents `/opsx:sync` on uncommitted working tree |
+| Archive guard rule | ✅ present in `tasks:` rules / ❌ missing from config.yaml | Prevents `/opsx:archive` on uncommitted working tree |
 
 ## Action Items
 [Ordered by priority — each item is a single, actionable step:]
@@ -167,8 +170,10 @@ this and have a complete picture.
 2. ...
 [If pre-commit hook is missing, include:]
 - Install pre-commit quality gate (compile + tests): run `openspec:setup` Phase 3 Step 3c
-[If apply guard rule is missing from config.yaml tasks: rules, include:]
-- Add apply guard to `openspec/config.yaml` under `rules.tasks`: `Never run /opsx:apply on a working tree with uncommitted changes — commit or stash all pending changes before applying a proposal.`
+[If any clean-repo guard rule is missing from config.yaml tasks: rules, include one action item per missing rule:]
+- Add apply guard: `Never run /opsx:apply on a working tree with uncommitted changes — commit or stash all pending changes before applying a proposal.`
+- Add sync guard: `Never run /opsx:sync on a working tree with uncommitted changes — commit or stash all pending changes before syncing specs.`
+- Add archive guard: `Never run /opsx:archive on a working tree with uncommitted changes — commit or stash all pending changes before archiving a change.`
 
 ---
 _Run `openspec:setup` to handle all of the above interactively._
