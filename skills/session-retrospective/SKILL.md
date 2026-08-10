@@ -24,6 +24,8 @@ Reviews a saved project session JSONL file to surface actionable improvements ac
    ```bash
    cat ~/.claude/projects/{ENCODED_PATH}/sessions-index.json
    ```
+   The file is a JSON object with an `entries` array. Each entry has: `fullPath` (path to JSONL file), `firstPrompt` (first user message), `modified` (ISO timestamp), `messageCount` (integer), and optional `summary` field. Use `firstPrompt` for the session label in the display list.
+
    If the file does not exist, tell the user: "No sessions are indexed for this project." and stop.
 
 3. Display the 5 most recent sessions:
