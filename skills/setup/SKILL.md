@@ -306,9 +306,15 @@ Write the file only after confirmation.
 
 ### Step 3b: Validate `openspec/config.yaml`
 
-`openspec validate` runs automatically via a skill hook immediately after the file is written.
-If it reports errors, fix the offending lines (typically malformed YAML, an unknown key, or a missing
-required field), re-show the corrected file, and write it again — the hook re-validates automatically.
+Run:
+```bash
+openspec validate
+```
+
+A skill hook also triggers this automatically after every write to `openspec/config.yaml`, so errors
+surface immediately even if this step is skipped. If validation reports errors, show the exact output
+to the engineer, fix the offending lines (typically malformed YAML, an unknown key, or a missing
+required field), re-show the corrected file, and confirm before writing again.
 
 ### Step 4: Key commands to know
 

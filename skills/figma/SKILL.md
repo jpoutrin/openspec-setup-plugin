@@ -137,8 +137,13 @@ Enable: `schema: design-first` in config.yaml.
 
 ## Step 7: Validate and update CLAUDE.md
 
-`openspec validate` runs automatically via a skill hook after the config is written. If it reports
-errors, fix and rewrite the file — the hook re-validates automatically.
+```bash
+openspec validate 2>/dev/null || cat openspec/config.yaml
+```
+
+A skill hook also triggers this automatically after every write to `openspec/config.yaml`, so errors
+surface immediately even if this step is skipped. If validation fails, show the output, fix the
+offending lines, and rewrite the file.
 
 Test rules are active: `/opsx:propose test-figma-setup` — the generated `proposal.md` should contain
 a "Design" section placeholder confirming `rules.proposal` is being injected.
