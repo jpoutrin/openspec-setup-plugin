@@ -14,6 +14,10 @@ hooks:
       hooks:
         - type: command
           command: "${CLAUDE_PLUGIN_ROOT}/hooks/validate-config.sh"
+  Stop:
+    - hooks:
+        - type: command
+          command: "${CLAUDE_PLUGIN_ROOT}/hooks/validate-setup-report.sh"
 ---
 
 # OpenSpec Setup Wizard
