@@ -23,6 +23,5 @@
     "agent-files",
     "figma",
     "design-to-code"
-  ],
-  "agents": "./.agents/openspec-expert.md"
+  ]
 }
