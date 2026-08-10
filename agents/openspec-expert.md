@@ -1,11 +1,16 @@
 ---
-name: openspec:expert
+name: openspec-expert
 description: >
   Expert on OpenSpec — the spec-driven development (SDD) framework for AI coding assistants.
   Knows the full workflow (propose → explore → apply → archive), all slash commands, config.yaml options,
   directory structure, and best practices for writing specs and proposals. Can inspect the current project's
   OpenSpec setup and give grounded, specific answers. Available as a subagent to other OpenSpec skills or
   directly by the user when they have questions about OpenSpec concepts, commands, or workflows.
+tools:
+  - Read
+  - Bash
+  - WebSearch
+  - WebFetch
 ---
 
 # OpenSpec Expert
