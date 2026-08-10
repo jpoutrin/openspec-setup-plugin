@@ -298,6 +298,17 @@ Show the full generated `config.yaml` and ask: _"Does this look right? I can adj
 
 Write the file only after confirmation.
 
+### Step 3b: Validate `openspec/config.yaml`
+
+After writing the file, run:
+```bash
+openspec validate
+```
+
+If validation passes, continue. If it reports errors, show the exact output to the engineer, fix the
+offending lines (typically malformed YAML, an unknown key, or a missing required field), re-show the
+corrected file, and run `openspec validate` again before moving on.
+
 ### Step 4: Key commands to know
 
 | Command | What it does |
