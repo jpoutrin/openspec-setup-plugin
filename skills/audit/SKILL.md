@@ -8,6 +8,11 @@ description: >
   "check what's installed", "what do I need for OpenSpec", "openspec audit", "check my dev tools",
   "is my project ready for AI coding", "what MCP servers should I add", or "which LSP do I need".
   Also invoke it at the start of any troubleshooting session about AI tooling on a project.
+hooks:
+  Stop:
+    - hooks:
+        - type: command
+          command: "${CLAUDE_PLUGIN_ROOT}/hooks/validate-audit-report.sh"
 ---
 
 # OpenSpec Audit
@@ -88,16 +93,6 @@ ls CLAUDE.md .claude/CLAUDE.md .github/copilot-instructions.md 2>/dev/null || tr
 ls .git/hooks/pre-commit 2>/dev/null && head -3 .git/hooks/pre-commit || echo "NOT_FOUND"
 ```
 
-### Check 9: Clean-repo guard rules in config.yaml
-
-```bash
-grep -c "opsx:apply" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
-grep -c "opsx:sync" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
-grep -c "opsx:archive" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
-```
-
-Verify that `openspec/config.yaml` contains all three clean-repo guard rules in its `tasks:` rules — one each for `/opsx:apply`, `/opsx:sync`, and `/opsx:archive`. These commands mutate the working tree or produce artifacts from it; running them over uncommitted changes silently corrupts the change history. Flag each missing rule individually.
-
 Also check for hook managers (which replace raw `.git/hooks/`):
 ```bash
 # husky
@@ -109,6 +104,16 @@ ls .pre-commit-config.yaml 2>/dev/null || true
 ```
 
 Report which path is active: raw hook, hook manager, or none.
+
+### Check 9: Clean-repo guard rules in config.yaml
+
+```bash
+grep -c "opsx:apply" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
+grep -c "opsx:sync" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
+grep -c "opsx:archive" openspec/config.yaml 2>/dev/null || echo "NOT_FOUND"
+```
+
+Verify that `openspec/config.yaml` contains all three clean-repo guard rules in its `tasks:` rules — one each for `/opsx:apply`, `/opsx:sync`, and `/opsx:archive`. These commands mutate the working tree or produce artifacts from it; running them over uncommitted changes silently corrupts the change history. Flag each missing rule individually.
 
 ---
 
@@ -157,12 +162,18 @@ this and have a complete picture.
 | `.github/copilot-instructions.md` | ✅ present / ❌ missing |
 
 ## Quality Gates
+
+### Commit gates
 | Gate | Status | Notes |
 |------|--------|-------|
-| Pre-commit hook | ✅ `.git/hooks/pre-commit` / ✅ husky / ✅ lefthook / ✅ pre-commit / ❌ none | [what it checks, or "not configured"] |
-| Apply guard rule | ✅ present in `tasks:` rules / ❌ missing from config.yaml | Prevents `/opsx:apply` on uncommitted working tree |
-| Sync guard rule | ✅ present in `tasks:` rules / ❌ missing from config.yaml | Prevents `/opsx:sync` on uncommitted working tree |
-| Archive guard rule | ✅ present in `tasks:` rules / ❌ missing from config.yaml | Prevents `/opsx:archive` on uncommitted working tree |
+| Pre-commit hook | ✅ `.git/hooks/pre-commit` / ✅ husky / ✅ lefthook / ✅ pre-commit / ❌ none | [what it checks — compile cmd and test cmd — or "not configured"] |
+
+### Clean-repo rules (`openspec/config.yaml` → `rules.tasks`)
+| Rule | Status | Purpose |
+|------|--------|---------|
+| Apply guard rule | ✅ present / ❌ missing from config.yaml | Prevents `/opsx:apply` on uncommitted working tree |
+| Sync guard rule | ✅ present / ❌ missing from config.yaml | Prevents `/opsx:sync` on uncommitted working tree |
+| Archive guard rule | ✅ present / ❌ missing from config.yaml | Prevents `/opsx:archive` on uncommitted working tree |
 
 ## Action Items
 [Ordered by priority — each item is a single, actionable step:]
@@ -195,3 +206,7 @@ to add the missing integrations.
 
 **Pre-commit hook present but empty or trivial** (e.g., just a shebang): report as ❌ not configured —
 a hook file that doesn't run compile + tests provides no quality gate.
+
+**Clean-repo guards partially present** (some rules missing from `config.yaml`): flag each missing rule
+individually in both the Quality Gates table and the Action Items list — do not report the whole group
+as ✅ if any of the three are absent.
