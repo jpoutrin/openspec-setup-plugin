@@ -1,0 +1,65 @@
+#!/bin/bash
+# OpenSpec-generated pre-commit hook.
+# Blocks the commit if compilation or unit tests fail.
+# Edit COMPILE_CMD and TEST_CMD below to match your project.
+
+set -euo pipefail
+
+# ── Configuration (auto-populated by openspec setup) ─────────────────────────
+# COMPILE_CMD: type-check / build step. Leave empty to skip.
+# TEST_CMD:    unit test command. Leave empty to skip.
+COMPILE_CMD="${OPENSPEC_COMPILE_CMD:-}"
+TEST_CMD="${OPENSPEC_TEST_CMD:-}"
+# ─────────────────────────────────────────────────────────────────────────────
+
+fail() { echo "✗ pre-commit: $*" >&2; exit 1; }
+ok()   { echo "✓ pre-commit: $*"; }
+
+if [[ -z "$COMPILE_CMD" && -z "$TEST_CMD" ]]; then
+  # Auto-detect if not configured
+  if [[ -f "tsconfig.json" ]]; then
+    COMPILE_CMD="npx tsc --noEmit"
+    # npm test passes args through only if the test script supports it;
+    # add --passWithNoTests here if your runner (Jest/Vitest) accepts it.
+    TEST_CMD="npm test"
+  elif [[ -f "pyproject.toml" || -f "setup.py" ]]; then
+    COMPILE_CMD="python -m mypy . --ignore-missing-imports"
+    TEST_CMD="python -m pytest -q"
+  elif [[ -f "Cargo.toml" ]]; then
+    # cargo test compiles before running — no separate check step needed.
+    COMPILE_CMD=""
+    TEST_CMD="cargo test"
+  elif [[ -f "go.mod" ]]; then
+    COMPILE_CMD="go build ./..."
+    TEST_CMD="go test ./..."
+  elif [[ -f "pom.xml" ]]; then
+    # mvn test lifecycle includes compile — no separate compile step needed.
+    COMPILE_CMD=""
+    TEST_CMD="mvn test -q"
+  elif [[ -f "composer.json" ]]; then
+    COMPILE_CMD=""
+    TEST_CMD="./vendor/bin/phpunit"
+  elif [[ -f "mix.exs" ]]; then
+    COMPILE_CMD="mix compile --warnings-as-errors"
+    TEST_CMD="mix test"
+  elif [[ -f "Gemfile" ]]; then
+    COMPILE_CMD=""
+    TEST_CMD="bundle exec rspec --format progress"
+  fi
+fi
+
+run_cmd() {
+  bash -c "$1"
+}
+
+if [[ -n "$COMPILE_CMD" ]]; then
+  echo "→ Running compile check: $COMPILE_CMD"
+  run_cmd "$COMPILE_CMD" || fail "compile check failed — fix errors before committing"
+  ok "compile check passed"
+fi
+
+if [[ -n "$TEST_CMD" ]]; then
+  echo "→ Running unit tests: $TEST_CMD"
+  run_cmd "$TEST_CMD" || fail "unit tests failed — fix failing tests before committing"
+  ok "unit tests passed"
+fi

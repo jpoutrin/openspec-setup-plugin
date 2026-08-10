@@ -90,6 +90,17 @@ context: |
 - Each line is testable in a code review — "write clean code" is not a convention
 - Cover: import style, naming, typing approach, test location, commands
 - 5–12 bullets is the right range; fewer = incomplete, more = not read
+- **For weakly typed languages**, always include the maximum-strictness typing rule (see table below)
+
+**Typing rule by language (include the matching bullet when the language is detected):**
+
+| Language | Hard convention bullet to include |
+|----------|----------------------------------|
+| Python | `Full type annotations required on all functions and public variables; mypy runs with strict = true (or disallow_untyped_defs = true + disallow_any_generics = true). Modern syntax: list[str] not List[str], X \| None not Optional[X].` |
+| JavaScript (no TS) | `TypeScript strict mode required (strict: true in tsconfig.json); no implicit any; all public functions carry explicit return types.` |
+| PHP | `declare(strict_types=1) at the top of every file; PHPStan level 9 (or Psalm strict mode); all public methods carry typed parameters and return types.` |
+| Ruby | `Sorbet strict mode (# typed: strict) in all non-generated files; @sig annotations on all public methods; no T.untyped in production code.` |
+| Elixir | `@spec typespecs required on all public functions; Dialyzer runs in CI with no_return and unmatched_returns enabled.` |
 
 ### Subsection: Frontend conventions (if applicable)
 
@@ -243,6 +254,38 @@ TypeScript / Node.js:
 ```yaml
     - Run tsc --noEmit before marking any TypeScript task complete.
     - Prefer named exports; no default exports except for Next.js pages.
+```
+
+**Weakly typed language additions (include for the matching detected language):**
+
+Python:
+```yaml
+    - Annotate every new function parameter and return type; run mypy --strict (or equivalent) before marking any task complete.
+    - Use modern union syntax (X | None, list[str]) — never Optional, List, Dict from typing.
+```
+
+JavaScript (no TypeScript):
+```yaml
+    - All new code must be TypeScript; run tsc --noEmit before marking any task complete.
+    - No implicit any — add explicit types if inference cannot resolve.
+```
+
+PHP:
+```yaml
+    - Add declare(strict_types=1) at the top of every new file.
+    - Run PHPStan at level 9 (or Psalm in strict mode) before marking any task complete.
+```
+
+Ruby:
+```yaml
+    - Add # typed: strict to every new file; annotate all public methods with @sig before marking tasks complete.
+    - No T.untyped in production code paths.
+```
+
+Elixir:
+```yaml
+    - Add @spec to every new public function before marking the task complete.
+    - Run mix dialyzer in CI; resolve all no_return and unmatched_returns warnings.
 ```
 
 ---

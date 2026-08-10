@@ -300,6 +300,15 @@ For the `rules:` section, apply the canonical rules from `config-best-practices.
 then add any stack-specific rules that apply to the detected project type. Prefer rules that reference
 the project's actual tools (e.g., `make test` not `npm test` for a Python/Make project).
 
+**Typing rule (mandatory for weakly typed languages):** If Phase 1 detected Python, JavaScript (without
+TypeScript), PHP, Ruby, or Elixir, you MUST automatically include the matching typing rules from
+`config-best-practices.md` in BOTH:
+1. The `## Hard conventions` subsection of `context:` — the strictness constraint bullet.
+2. The `tasks:` rules — the "run the type checker before marking complete" enforcement bullet.
+
+Do not ask the engineer whether to include these — maximum typing strictness is always the right
+default for weakly typed languages and should be present unless the engineer explicitly removes it.
+
 Show the full generated `config.yaml` and ask: _"Does this look right? I can adjust any section before writing."_
 
 Write the file only after confirmation.
@@ -315,6 +324,67 @@ A skill hook also triggers this automatically after every write to `openspec/con
 surface immediately even if this step is skipped. If validation reports errors, show the exact output
 to the engineer, fix the offending lines (typically malformed YAML, an unknown key, or a missing
 required field), re-show the corrected file, and confirm before writing again.
+
+### Step 3c: Install git pre-commit hook
+
+Install the quality gate hook so every commit is blocked by failing compilation or tests.
+
+Determine the correct `COMPILE_CMD` and `TEST_CMD` from the stack detected in Phase 1:
+
+| Stack | COMPILE_CMD | TEST_CMD |
+|-------|-------------|----------|
+| TypeScript | `npx tsc --noEmit` | `npm test` |
+| Python (mypy) | `python -m mypy . --ignore-missing-imports` | `python -m pytest -q` |
+| Python (pyright) | `npx pyright` | `python -m pytest -q` |
+| Go | `go build ./...` | `go test ./...` |
+| Rust | _(empty — `cargo test` compiles too)_ | `cargo test` |
+| Elixir | `mix compile --warnings-as-errors` | `mix test` |
+| Java/Maven | _(empty — `mvn test` includes compile)_ | `mvn test -q` |
+| PHP | _(empty)_ | `./vendor/bin/phpunit` |
+| Ruby | _(empty)_ | `bundle exec rspec --format progress` |
+
+**Check for a hook manager first.** If the project has a `package.json`, check whether husky or
+lefthook is installed — husky rewrites `.git/hooks/` and a raw hook written there will be silently
+overwritten on the next `npm install`. If a hook manager is present, add the steps there instead:
+
+```bash
+# husky (v9+)
+echo "npx tsc --noEmit && npm test" > .husky/pre-commit
+chmod +x .husky/pre-commit
+
+# lefthook (lefthook.yml)
+# add under pre-commit > commands in lefthook.yml
+```
+
+**If no hook manager is present**, copy the hook from the plugin, inject the resolved commands,
+and make it executable:
+
+```bash
+# Copy hook template (adjust CLAUDE_PLUGIN_ROOT to the plugin's path if needed)
+cp "${CLAUDE_PLUGIN_ROOT}/hooks/git/pre-commit" .git/hooks/pre-commit
+
+# Inject the project-specific commands (substitute actual values from table above).
+# sed -i'' (no space) is portable across macOS/BSD and Linux/GNU sed.
+sed -i'' \
+  's|COMPILE_CMD="${OPENSPEC_COMPILE_CMD:-}"|COMPILE_CMD="<resolved-compile-cmd>"|' \
+  .git/hooks/pre-commit
+sed -i'' \
+  's|TEST_CMD="${OPENSPEC_TEST_CMD:-}"|TEST_CMD="<resolved-test-cmd>"|' \
+  .git/hooks/pre-commit
+
+chmod +x .git/hooks/pre-commit
+```
+
+If `CLAUDE_PLUGIN_ROOT` is not set, show the engineer the content of `hooks/git/pre-commit` and
+tell them to create `.git/hooks/pre-commit` with those contents, filling in their commands.
+
+Verify installation:
+```bash
+.git/hooks/pre-commit && echo "Hook OK"
+```
+
+If the hook fails on the first run, show the exact output and help the engineer fix the command
+(wrong test runner binary, missing dependency, etc.) before moving on.
 
 ### Step 4: Key commands to know
 
@@ -347,6 +417,7 @@ Close with a clear wrap-up:
 - ✅ CLAUDE.md [created / improved]
 - ✅ .github/copilot-instructions.md [created / improved]
 - ✅ OpenSpec [installed / confirmed] and initialized
+- ✅ git pre-commit hook installed — blocks commits on compile failure or test failure
 
 ### Your next steps
 1. [Install LSP if flagged — exact command]

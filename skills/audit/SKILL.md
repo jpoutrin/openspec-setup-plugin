@@ -82,6 +82,24 @@ ls openspec/config.yaml openspec/specs/ .claude/commands/opsx/ 2>/dev/null || tr
 ls CLAUDE.md .claude/CLAUDE.md .github/copilot-instructions.md 2>/dev/null || true
 ```
 
+### Check 8: Pre-commit hook
+
+```bash
+ls .git/hooks/pre-commit 2>/dev/null && head -3 .git/hooks/pre-commit || echo "NOT_FOUND"
+```
+
+Also check for hook managers (which replace raw `.git/hooks/`):
+```bash
+# husky
+ls .husky/pre-commit 2>/dev/null || true
+# lefthook
+ls lefthook.yml .lefthook.yml 2>/dev/null | xargs grep -l "pre-commit" 2>/dev/null || true
+# pre-commit framework
+ls .pre-commit-config.yaml 2>/dev/null || true
+```
+
+Report which path is active: raw hook, hook manager, or none.
+
 ---
 
 ## Report format
@@ -128,10 +146,17 @@ this and have a complete picture.
 | `CLAUDE.md` | ✅ present / ❌ missing |
 | `.github/copilot-instructions.md` | ✅ present / ❌ missing |
 
+## Quality Gates
+| Gate | Status | Notes |
+|------|--------|-------|
+| Pre-commit hook | ✅ `.git/hooks/pre-commit` / ✅ husky / ✅ lefthook / ✅ pre-commit / ❌ none | [what it checks, or "not configured"] |
+
 ## Action Items
 [Ordered by priority — each item is a single, actionable step:]
 1. [Most critical first — e.g., install Node.js if missing]
 2. ...
+[If pre-commit hook is missing, include:]
+- Install pre-commit quality gate (compile + tests): run `openspec:setup` Phase 3 Step 3c
 
 ---
 _Run `openspec:setup` to handle all of the above interactively._
@@ -150,3 +175,6 @@ can verify. If WebSearch is unavailable, note "could not look up LSP — check h
 **OpenSpec partially configured** (config.yaml exists but no slash commands): flag this specifically —
 it likely means `openspec init` was run for a different tool. Suggest running `openspec init --tools claude,copilot`
 to add the missing integrations.
+
+**Pre-commit hook present but empty or trivial** (e.g., just a shebang): report as ❌ not configured —
+a hook file that doesn't run compile + tests provides no quality gate.
