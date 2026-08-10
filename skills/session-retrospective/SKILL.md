@@ -24,6 +24,7 @@ Reviews a saved project session JSONL file to surface actionable improvements ac
    ```bash
    cat ~/.claude/projects/{ENCODED_PATH}/sessions-index.json
    ```
+   If the file does not exist, tell the user: "No sessions are indexed for this project." and stop.
 
 3. Display the 5 most recent sessions:
    ```
@@ -50,7 +51,7 @@ Wait for answer. Store threshold (`H`, `M`, or `A`).
 
 ### Step 3: Parallel Signal Detection
 
-**HARD GATE: Launch all 4 subagents in a single parallel batch — one message, four agent dispatches. Running them sequentially is a correctness failure.**
+**HARD GATE: Launch all 4 subagents in a single parallel batch — one message, four agent dispatches. Running them sequentially is a correctness failure. Use Agent tool with subagent_type: `"claude"` (or `"fork"` if your harness supports it).**
 
 ---
 
@@ -185,6 +186,20 @@ Dispatch one synthesis subagent with all findings:
 >
 > **3. Write proposed_text** — this MUST be the exact text to write to the config file, not a description of what to write. For hookify: complete rule file content. For CLAUDE.md: the rule sentence(s). For memory: full memory body. For settings: exact JSON key-value to merge.
 >
+> Hookify counterexample — what WRONG looks like vs RIGHT:
+>
+> WRONG (narrative, not a file):
+> ```
+> "proposed_text": "Should add a hookify rule that warns when the assistant uses plain `make` instead of `/usr/bin/make`."
+> ```
+>
+> RIGHT (complete hookify rule file ready to write):
+> ```
+> "proposed_text": "---\nname: warn-plain-make\nenabled: true\nevent: bash\npattern: \"(?<![/\\w])make(\\s|$)\"\n---\n\nDo not use plain `make`. Always use the full binary path `/usr/bin/make` to avoid alias interference."
+> ```
+>
+> The proposed_text for a hookify finding must always be a complete file with YAML frontmatter (`name`, `enabled`, `event`, `pattern`) followed by the warning message body — never a prose description.
+>
 > **4. Rank:** high corrections > high errors > medium corrections > medium errors > friction > praise.
 >
 > **5. Filter** to threshold: H = high only; M = high+medium; A = all.
@@ -254,6 +269,8 @@ pattern: {regex-pattern}
 {warning message}
 ```
 The event and pattern come from the proposed_text the synthesis agent wrote.
+
+Derive `{kebab-name}` from the `context` field of the finding: lowercase the key noun/behavior, separate words with hyphens, and prefix with `warn-`, `block-`, or `require-` based on severity (`high` → `block-`, `medium` → `warn-`, `low` → `require-`). Example: context "assistant used plain make command" with severity medium → `warn-plain-make`.
 
 ### Memory Entry
 1. Create `~/.claude/projects/{encoded_path}/memory/{slug}.md`:
