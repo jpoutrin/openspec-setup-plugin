@@ -21,7 +21,7 @@ active change → AskUserQuestion with list if multiple. Always announce the sel
 what looks thin to it in the moment. Misses systematic coverage gaps (e.g., never asks
 about non-functional requirements, never flags vague adjectives like "robust").
 
-**Expected behavior:** Internal scan against 9 taxonomy categories. Each category marked
+**Expected behavior:** Internal scan against 10 taxonomy categories. Each category marked
 Clear/Partial/Missing. Priority queue ranked by Impact × Uncertainty. Questions target
 the highest-impact unresolved categories first.
 
