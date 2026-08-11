@@ -4,7 +4,8 @@ description: >
   Use when the user wants to clarify, refine, or fill gaps in an OpenSpec change proposal
   before implementing it. Triggered by "/opsx:clarify", "clarify my proposal",
   "fill gaps before applying", "refine the spec", "I want to clarify the change before
-  implementing". Do NOT use for open-ended exploration (use /opsx:explore) or for
+  implementing", "fill in the gaps in the proposal", "what's missing from my proposal".
+  Do NOT use for open-ended exploration (use /opsx:explore) or for
   modifying tasks (use /opsx:update-change).
 ---
 
@@ -65,6 +66,7 @@ or **Missing** (entirely absent and needed).
 | Constraints & tradeoffs | Tech constraints, explicitly rejected alternatives |
 | Completion signals | Acceptance criteria testability, Definition of Done indicators |
 | Placeholders | TODO markers, vague adjectives ("robust", "intuitive") without quantification |
+| Terminology & consistency | Canonical terms, synonym conflicts, undefined jargon |
 
 **Do not output the coverage map** unless no questions will be asked.
 
@@ -208,3 +210,7 @@ the old text. Never leave two conflicting statements in the same document.
 
 **Exceeding 5 questions:** Hard cap is 5 asked questions. Clarification retries for a
 single ambiguous answer do not count toward the cap.
+
+**Omitting recommendations:** Every question must include a "Recommended:" or "Suggested:"
+line with reasoning. Presenting bare options without a recommendation defeats the skill's
+purpose — users should be able to accept with "yes" without reading all options.
