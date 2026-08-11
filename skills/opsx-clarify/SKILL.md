@@ -156,6 +156,10 @@ Also update the most relevant section in the artifacts:
 | Edge case or error scenario | `design.md` → edge cases section (create if missing) |
 | Vague placeholder or TODO | Replace the placeholder in-place with the concrete answer |
 | Terminology conflict | Normalize the canonical term across both files |
+| User flows & UX (journeys, error/loading states) | `design.md` → user flows section (create if missing) |
+| Integration & dependencies (APIs, failure modes) | `design.md` → integration section (create if missing) |
+| Constraints & tradeoffs (rejected alternatives) | `design.md` → constraints section (create if missing) |
+| Completion signals (acceptance criteria, DoD) | `proposal.md` → `## Capabilities` (add acceptance criteria bullet) |
 
 **Integrity rules — all must hold after every write:**
 - No duplicate text: if a section already addresses the point, update it rather than appending
