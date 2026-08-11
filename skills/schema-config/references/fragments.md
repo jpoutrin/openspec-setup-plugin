@@ -23,32 +23,7 @@ rules:
 **Files to create:**
 - `docs/adr/0001-template.md` — standard ADR template
 
-Content of `docs/adr/0001-template.md`:
-```markdown
-# ADR-0001: [Decision Title]
-
-**Date:** YYYY-MM-DD
-**Status:** Proposed | Accepted | Deprecated | Superseded by ADR-XXXX
-
-## Context
-
-What is the issue we're addressing? What forces are at play? What constraints exist?
-
-## Decision
-
-What decision was made? State it clearly and directly.
-
-## Consequences
-
-**Positive:**
-- ...
-
-**Negative:**
-- ...
-
-**Risks:**
-- ...
-```
+Content of `docs/adr/0001-template.md`: copy from `skills/schema-config/references/adr-template.md`
 
 ---
 
