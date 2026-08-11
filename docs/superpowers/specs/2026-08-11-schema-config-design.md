@@ -75,8 +75,10 @@ rules:
 - Detection: "adr" in any tasks/proposal rule OR `docs/adr/` exists
 
 **`branch-naming`**
-- Tasks rule: branch name format — `feat/`, `fix/`, `chore/`, `docs/` prefix + kebab-case description (e.g., `feat/add-payment-webhooks`)
-- Detection: "branch" or "feat/" in any tasks rule
+- Proposal rule: use `spec/<change-name>` branches for spec work (proposal + design + spec-delta); merge to main before starting implementation
+- Tasks rule: use `feat/`, `fix/`, `refactor/`, `chore/`, `docs/` branches for the apply step (implementation); branch from main after the spec branch is merged
+- Enforces the two-phase branch model: spec work is separate from implementation work and lands first
+- Detection: "branch" or "spec/" or "feat/" in any proposal/tasks rule
 
 **`commit-conventions`**
 - Tasks rule: conventional commit format — `type(scope): description` where type ∈ {feat, fix, docs, refactor, test, chore}
