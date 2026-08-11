@@ -56,7 +56,7 @@ What decision was made? State it clearly and directly.
 
 **Description:** Enforces a two-phase branch model — spec branches for OpenSpec planning work, implementation branches for applying specs via `/opsx:apply`.
 
-**Detection:** `rules.proposal` or `rules.tasks` contains "branch" or "spec/" or "feat/".
+**Detection:** `rules.proposal` or `rules.tasks` contains "spec/" or "branch naming" or "feat/".
 
 **config.yaml patch:**
 ```yaml
@@ -75,7 +75,7 @@ rules:
 
 **Description:** Conventional Commits format for all git commits in the project.
 
-**Detection:** `rules.tasks` contains "conventional" or "commit".
+**Detection:** `rules.tasks` contains "conventional commit" or "conventional commits".
 
 **config.yaml patch:**
 ```yaml

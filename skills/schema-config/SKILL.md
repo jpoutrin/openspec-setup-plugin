@@ -69,7 +69,7 @@ Use **AskUserQuestion** with options: Yes / Skip / Tell me more
 
 - **Yes** → record selection; move to next fragment
 - **Skip** → record as skipped; move to next fragment
-- **Tell me more** → show the full `config.yaml patch` section from the catalog verbatim, then re-ask with the same three options (does not loop again — re-ask once and move on regardless of answer)
+- **Tell me more** → show the full `config.yaml patch` section from the catalog verbatim, then re-ask with the same three options. If the user picks "Tell me more" again, treat it as Skip and move to the next fragment.
 
 **If user selects Skip for every fragment:** respond "No fragments selected. Nothing written." and stop.
 
