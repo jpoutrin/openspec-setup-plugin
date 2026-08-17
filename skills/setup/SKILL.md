@@ -95,6 +95,19 @@ Use `skills/audit/references/mcp-catalog.md` to match MCP servers to the detecte
 ls openspec/config.yaml openspec/specs/ .claude/commands/opsx/ 2>/dev/null
 ```
 
+**If `openspec/config.yaml` already exists**, also check whether it's already meaningfully
+configured (not just the empty template `openspec init` generates, which only has commented-out
+example rules):
+
+```bash
+grep -q "^rules:" openspec/config.yaml 2>/dev/null && echo "ALREADY_CONFIGURED" || echo "FRESH_OR_EMPTY"
+```
+
+If `ALREADY_CONFIGURED`, this is a brownfield project with OpenSpec already set up. Run the same
+fragment-catalog and clean-repo-guard checks that `skills/audit/SKILL.md` runs (Check 6b and
+Check 9), reading `skills/schema-config/references/fragments.md` as the catalog — Phase 3 below
+branches on this result.
+
 ### Audit Report
 
 Present findings in this format:
@@ -125,6 +138,11 @@ Present findings in this format:
 ### OpenSpec Status
 - config.yaml: ✅ found  /  ❌ not yet initialized
 - Slash commands: ✅  /  ❌
+[If config.yaml exists and is ALREADY_CONFIGURED (see 1e):]
+- Already configured: ✅ this project has an existing rules: section — Phase 3 will not re-run
+  openspec init or the interview (see Phase 3's branch)
+- Fragment catalog: N/9 configured — [name any ❌ missing or ⚠️ conflicting]
+- Clean-repo guard rules: ✅ all 3 present  /  ❌ N missing
 ```
 
 After presenting: _"Ready to move on to your agent files?"_
@@ -248,6 +266,26 @@ After generating: _"Files written. Ready to proceed to OpenSpec initialization?"
 ---
 
 ## Phase 3: OpenSpec Initialization
+
+### Before Step 1: Check for existing OpenSpec configuration
+
+If Phase 1 (1e) found `openspec/config.yaml` already exists **and** is `ALREADY_CONFIGURED` (has
+a real `rules:` section, not just the commented-out example), this project already has OpenSpec
+set up — running `openspec init` again or the from-scratch interview in Step 3 would be
+redundant at best and destructive at worst (`openspec init` can prompt to overwrite existing
+files, and generating a fresh `context:`/`rules:` block risks clobbering hand-tuned content).
+
+In that case, skip Steps 1–3c entirely:
+1. Report what Phase 1 already found (fragment catalog status, clean-repo guard status).
+2. Say: "This project already has OpenSpec configured, so I won't re-run `openspec init` or the
+   interview — that could overwrite your existing rules. To add opt-in workflow conventions
+   (ADRs, branch naming, the Architecture/Program Design/vertical-slice rules, etc.) run
+   `/schema-config` instead. For a full read-only status report at any time, run
+   `/openspec-setup:audit`."
+3. Go straight to Step 4 (Key commands to know).
+
+Otherwise (no `config.yaml`, or one with only the empty/example `rules:` template — the normal
+`openspec init` output), continue with Step 1 below.
 
 ### Step 1: Install OpenSpec (if not already installed)
 
@@ -446,7 +484,26 @@ openspec config profile
 
 ## Phase 4: Summary
 
-Close with a clear wrap-up:
+**If Phase 3 took the "already configured" branch** (Steps 1–3c were skipped), do not use the
+full checklist below as-is — it would falsely imply `openspec init` and the pre-commit hook were
+just installed. Instead close with:
+
+```
+## Setup Complete
+
+### Done
+- ✅ Audit completed — [N action items identified]
+- ✅ CLAUDE.md [created / improved]
+- ✅ .github/copilot-instructions.md [created / improved]
+- ➖ OpenSpec: already configured — config.yaml and pre-commit hook untouched (see Phase 1 findings)
+
+### Your next steps
+1. [Install LSP if flagged — exact command]
+2. [Add recommended MCPs — point to mcp-catalog or specific instructions]
+3. Add opt-in workflow conventions or resolve any gaps Phase 1 flagged: `/schema-config`
+```
+
+Otherwise, close with a clear wrap-up:
 
 ```
 ## Setup Complete
