@@ -89,8 +89,8 @@ already reports config.yaml as missing). Apply the same Detection criteria as th
 `system-architecture`, `program-design`, and `vertical-slices` fragments in
 `skills/schema-config/references/fragments.md`:
 
-- **Architecture rules present** — `rules.design` contains an "Architecture" section marker OR `docs/architecture/` directory exists.
-- **Program Design rules present** — `rules.design` contains a "Program Design" section marker OR `docs/program-design/` directory exists.
+- **Architecture rules present** — `rules.design` contains the literal string `Include a "## Architecture" section whenever` OR `docs/architecture/` directory exists (check with `ls docs/architecture 2>/dev/null`).
+- **Program Design rules present** — `rules.design` contains the literal string `Include a "## Program Design" section whenever` OR `docs/program-design/` directory exists (check with `ls docs/program-design 2>/dev/null`).
 - **Vertical-slice task ordering** — `rules.tasks` contains "vertical slice". If missing, also check whether `rules.tasks` contains the old stub-first rule text verbatim (`Start each capability group with a stub task...`) — if so, report as conflicting rather than simply missing.
 
 This check is read-only: report status only, never offer to apply anything (that's

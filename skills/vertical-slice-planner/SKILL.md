@@ -39,6 +39,11 @@ steps above. Slot any stack-specific additions into the step they actually belon
 - `tsc --noEmit` → whichever step introduces the TypeScript change it's checking
 - Accessibility verification → step 5 or 6, whichever introduces the UI behavior being checked
 
+Write each capability group as a `## N. <Group>` heading (per the project's canonical `tasks:`
+format), with each of its six slices as a numbered task item `- [ ] N.M <description>` — slice 1
+becomes task N.1, slice 2 becomes N.2, and so on through N.6. The Automated/Manual Verification
+lists from Step 3 nest under each slice's own task item; they are not separate top-level tasks.
+
 ## Step 3: Write Automated/Manual Verification per slice
 
 For each of the six steps, write two verification lists:

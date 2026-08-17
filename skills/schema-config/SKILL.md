@@ -32,7 +32,13 @@ Read `openspec/config.yaml`.
 "No `openspec/config.yaml` found. Run `/openspec:setup` or `openspec init` first." and stop.
 
 For each fragment in the catalog (in catalog order), apply its Detection criteria against
-the existing config.yaml content:
+the existing config.yaml content. For any fragment whose Detection criteria includes an "OR
+`<directory>` exists" clause (`adr`, `system-architecture`, `program-design`,
+`worktree-workflow`), also check for that directory, e.g.:
+```bash
+ls docs/adr docs/architecture docs/program-design .worktrees 2>/dev/null
+```
+A fragment is Clear if either half of its Detection matches:
 - **Clear** — Detection criteria matched (fragment already configured)
 - **Missing** — Detection criteria not matched (fragment not configured)
 
@@ -54,6 +60,10 @@ vertical-slices → branch-naming → commit-conventions → epic-breakdown → 
 worktree-workflow):
 
 Present one fragment at a time. Never reveal which fragments come next.
+
+**Exception:** before presenting `vertical-slices`, first run the replace-exception check
+described in Step 6 — if the old stub-first rule is found, it replaces the normal
+Yes/Skip/Tell-me-more prompt for this one fragment with a different question.
 
 ```
 Fragment: <name>
@@ -105,7 +115,8 @@ Apply all selected fragments in one pass:
 **config.yaml patching:** For each selected fragment, append its `rules:` and `operations:`
 entries to the existing config.yaml structure. Before appending each rule, scan the
 target rule list for a semantically equivalent rule — if one exists, skip that individual
-rule silently. Never replace or delete existing rules.
+rule silently. Never replace or delete existing rules, except for the one narrow
+`vertical-slices` exception described immediately below.
 
 **Supporting files:** For each file under `Files to create`, create it only if it does not
 already exist. If the file exists, skip it and note "already exists — not overwritten" in

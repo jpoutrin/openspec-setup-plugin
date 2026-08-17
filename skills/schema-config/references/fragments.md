@@ -31,7 +31,7 @@ Content of `docs/adr/0001-template.md`: copy from `skills/schema-config/referenc
 
 **Description:** Adds a required "## Architecture" section to design.md for changes touching more than one service, endpoint, queue, or store — scoped to service/endpoint/schema/queue/store relationships only, produced via the system-architecture-doc skill.
 
-**Detection:** `rules.design` contains "Architecture" section marker OR `docs/architecture/` directory exists.
+**Detection:** `rules.design` contains the literal string `Include a "## Architecture" section whenever` OR `docs/architecture/` directory exists.
 
 **config.yaml patch:**
 ```yaml
@@ -54,7 +54,7 @@ rules:
 
 **Description:** Adds a required "## Program Design" section to design.md for changes with non-trivial new call flow — call-stack diff tree, file-tree diff, and typed signatures, produced via the program-design-doc skill.
 
-**Detection:** `rules.design` contains "Program Design" section marker OR `docs/program-design/` directory exists.
+**Detection:** `rules.design` contains the literal string `Include a "## Program Design" section whenever` OR `docs/program-design/` directory exists.
 
 **config.yaml patch:**
 ```yaml
@@ -63,7 +63,7 @@ rules:
     - 'Include a "## Program Design" section whenever the change introduces a non-trivial new call flow, more than ~2 new functions/methods, or changes an existing call flow beyond a one-line edit.'
     - '"## Program Design" is one level below Architecture: the shape of the code itself, decided before implementation — not the architecture (services/contracts) and not the implementation (bodies).'
     - Use the program-design-doc skill to produce this section.
-    - 'Give a call-stack diff tree for any control-flow change — use diff syntax (+/-) when only part of the stack is changing. See docs/program-design/TEMPLATE.md.'
+    - Give a call-stack diff tree for any control-flow change — use diff syntax (+/-) when only part of the stack is changing. See docs/program-design/TEMPLATE.md.
     - Give a file-tree diff showing what's new/modified, with a one-line reason per entry.
     - Give fully-typed method/function signatures (not bodies) for every new or changed function that crosses a module boundary.
 ```

@@ -59,7 +59,9 @@ writing anything into design.md.
 
 ## Step 4: Write the Architecture section
 
-Use `docs/architecture/TEMPLATE.md` as the section skeleton. Include, in this order:
+Use `docs/architecture/TEMPLATE.md` as the section skeleton — or, if it does not exist yet (e.g.
+this project never ran `/openspec:setup` or the `system-architecture` fragment), fall back to
+`${CLAUDE_PLUGIN_ROOT}/skills/setup/references/architecture-template.md`. Include, in this order:
 
 1. **Sequence diagram** (mermaid) — required whenever the change involves more than one service
    or consumer. Show the actual request/message flow for the chosen option.

@@ -55,7 +55,9 @@ Get confirmation before proceeding to Step 4.
 
 ## Step 4: Write the Program Design section
 
-Use `docs/program-design/TEMPLATE.md` as the section skeleton. Include, in this order:
+Use `docs/program-design/TEMPLATE.md` as the section skeleton — or, if it does not exist yet
+(e.g. this project never ran `/openspec:setup` or the `program-design` fragment), fall back to
+`${CLAUDE_PLUGIN_ROOT}/skills/setup/references/program-design-template.md`. Include, in this order:
 
 1. **Call-stack diff tree** — for any control-flow change. Use diff syntax (+/-) when only part
    of the stack is changing; write the full tree when the flow is entirely new.
