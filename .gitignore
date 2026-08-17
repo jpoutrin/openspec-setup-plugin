@@ -1,2 +1,4 @@
 .claude/settings.local.json
 .DS_Store
+.worktrees/
+.superpowers/sdd/2026-08-17-brownfield-phase-alignment/
