@@ -82,6 +82,20 @@ Additional signals to check:
 ls openspec/config.yaml openspec/specs/ .claude/commands/opsx/ 2>/dev/null || true
 ```
 
+### Check 6b: Architecture / Program Design / Vertical-slice rule status
+
+Read `openspec/config.yaml` if it exists (skip this check entirely if it doesn't — Check 6
+already reports config.yaml as missing). Apply the same Detection criteria as the
+`system-architecture`, `program-design`, and `vertical-slices` fragments in
+`skills/schema-config/references/fragments.md`:
+
+- **Architecture rules present** — `rules.design` contains an "Architecture" section marker OR `docs/architecture/` directory exists.
+- **Program Design rules present** — `rules.design` contains a "Program Design" section marker OR `docs/program-design/` directory exists.
+- **Vertical-slice task ordering** — `rules.tasks` contains "vertical slice". If missing, also check whether `rules.tasks` contains the old stub-first rule text verbatim (`Start each capability group with a stub task...`) — if so, report as conflicting rather than simply missing.
+
+This check is read-only: report status only, never offer to apply anything (that's
+`/schema-config`'s job).
+
 ### Check 7: Agent files status
 ```bash
 ls CLAUDE.md .claude/CLAUDE.md .github/copilot-instructions.md 2>/dev/null || true
@@ -154,6 +168,9 @@ this and have a complete picture.
 | `openspec/config.yaml` | ✅ found / ❌ not initialized |
 | `openspec/specs/` | ✅ / ❌ |
 | Claude Code slash commands | ✅ `.claude/commands/opsx/` found / ❌ |
+| Architecture rules | ✅ present / ❌ missing → run `/schema-config` to add |
+| Program Design rules | ✅ present / ❌ missing → run `/schema-config` to add |
+| Vertical-slice task ordering | ✅ present / ⚠️ conflicting (old stub-first rule still active) → run `/schema-config` / ❌ missing → run `/schema-config` to add |
 
 ## Agent Files
 | File | Status |
@@ -185,6 +202,12 @@ this and have a complete picture.
 - Add apply guard: `Never run /opsx:apply on a working tree with uncommitted changes — commit or stash all pending changes before applying a proposal.`
 - Add sync guard: `Never run /opsx:sync on a working tree with uncommitted changes — commit or stash all pending changes before syncing specs.`
 - Add archive guard: `Never run /opsx:archive on a working tree with uncommitted changes — commit or stash all pending changes before archiving a change.`
+[If Architecture rules are missing:]
+- Add Architecture rules and template: run `/schema-config` and select the `system-architecture` fragment.
+[If Program Design rules are missing:]
+- Add Program Design rules and template: run `/schema-config` and select the `program-design` fragment.
+[If vertical-slice task ordering is missing or conflicting:]
+- Add or resolve vertical-slice task ordering: run `/schema-config` and select the `vertical-slices` fragment (it will offer to replace the old stub-first rule if one is found).
 
 ---
 _Run `openspec:setup` to handle all of the above interactively._
