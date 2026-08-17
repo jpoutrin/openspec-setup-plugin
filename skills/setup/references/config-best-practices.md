@@ -173,8 +173,31 @@ The design document is optional — include it only for changes with real design
     - Define each new/changed model as a field table (name, type, null, default, index, relation).
     - Call out migration and data-backfill implications for every model change.
     - For each API endpoint give method, path, auth scope, request body, response body, status codes, and error cases.
-    - Give fully-typed signatures (not bodies) for public service functions that cross module boundaries.
     - Format risks as [Risk] → Mitigation.
+```
+
+**Architecture subsection (independently gated — canonical, always include):**
+
+```yaml
+  design:
+    - 'Include a "## Architecture" section whenever the change adds/modifies more than one service, endpoint, queue, or store, or changes how existing ones talk to each other.'
+    - '"## Architecture" covers service/endpoint/schema/queue/store relationships only — no method signatures, call stacks, or file-level detail. That belongs in "## Program Design".'
+    - Use the system-architecture-doc skill to produce this section.
+    - For any change involving more than one service or consumer, include a mermaid sequence diagram showing the request/message flow.
+    - 'For new or changed endpoints, give the contract shape: method, path, request body, response body, status codes, error cases. See docs/architecture/TEMPLATE.md.'
+    - For new or changed data models, show the shape as a diff (added/changed/removed fields) — not prose.
+```
+
+**Program Design subsection (independently gated — canonical, always include):**
+
+```yaml
+  design:
+    - 'Include a "## Program Design" section whenever the change introduces a non-trivial new call flow, more than ~2 new functions/methods, or changes an existing call flow beyond a one-line edit.'
+    - '"## Program Design" is one level below Architecture: the shape of the code itself, decided before implementation — not the architecture (services/contracts) and not the implementation (bodies).'
+    - Use the program-design-doc skill to produce this section.
+    - Give a call-stack diff tree for any control-flow change — use diff syntax (+/-) when only part of the stack is changing. See docs/program-design/TEMPLATE.md.
+    - Give a file-tree diff showing what's new/modified, with a one-line reason per entry.
+    - Give fully-typed method/function signatures (not bodies) for every new or changed function that crosses a module boundary.
 ```
 
 **Stack-specific additions:**
@@ -229,7 +252,9 @@ Tasks are the implementation checklist — ordered, atomic, paired with tests.
   tasks:
     - Group tasks under ## N. <Group> headings and write each as - [ ] N.M <description>.
     - Order tasks by dependency; keep each small enough to finish in one session.
-    - Start each capability group with a stub task — typed model/service/serializer skeletons — before behavior tasks.
+    - 'Order tasks as vertical slices, not by architectural layer: (1) contract + mock data, verified with curl or equivalent, (2) frontend or consumer against the mock, iterated directly, (3) wire the real service behind the still-mocked boundary, (4) migrations and real data wiring, (5) business logic, (6) error handling. Each slice must be independently testable/touchable before the next begins.'
+    - 'Never group tasks as "all models" → "all services" → "all serializers" → "all endpoints." A capability group''s tasks must each be individually runnable/verifiable, not stubs waiting on later groups.'
+    - Use the vertical-slice-planner skill to produce the task breakdown.
     - Pair each code task with a test in the app's tests/ package.
     - Put every new function/method under full type hints; keep functions under ~30 lines.
     - Finish each group with verification tasks (lint, typecheck, test suite).
