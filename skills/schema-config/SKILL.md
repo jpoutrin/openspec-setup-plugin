@@ -49,8 +49,9 @@ Missing: [list or "none"]
 
 ## Step 4: Sequential Fragment Loop
 
-For each **Missing** fragment in catalog order (adr → branch-naming → commit-conventions →
-epic-breakdown → clarify-step → worktree-workflow):
+For each **Missing** fragment in catalog order (adr → system-architecture → program-design →
+vertical-slices → branch-naming → commit-conventions → epic-breakdown → clarify-step →
+worktree-workflow):
 
 Present one fragment at a time. Never reveal which fragments come next.
 
@@ -124,6 +125,31 @@ the completion report.
    - **Also missing** → skip this fragment entirely. Add to completion report:
      "clarify-step skipped — opsx:clarify skill not found. Install it first, then re-run `/schema-config`."
 
+**vertical-slices replace-exception check:** Before presenting or writing the `vertical-slices`
+fragment (Step 4), check whether `rules.tasks` contains the old stub-first rule text verbatim:
+`Start each capability group with a stub task — typed model/service/serializer skeletons —
+before behavior tasks.`
+
+- **If found:** skip the normal Yes/Skip/Tell-me-more flow for this fragment. Present instead:
+  > "Your project has the old stub-first task rule (`Start each capability group with a stub
+  > task...`), which conflicts with vertical-slice ordering. Replace it with the vertical-slice
+  > rule?"
+  >
+  > AskUserQuestion: **Replace it / Keep both (not recommended) / Skip this fragment**
+  - **Replace it** → in Step 6, remove the old rule line before appending the new
+    `vertical-slices` rules. Completion report line:
+    `openspec/config.yaml ← 1 rule replaced (tasks: stub-first → vertical-slice ordering)`
+  - **Keep both** → append the new rules alongside the old one. Completion report must warn:
+    "Both the old stub-first rule and the new vertical-slice rule are now active — these
+    conflict. Recommend manually removing the stub-first rule."
+  - **Skip this fragment** → no change, same as any other Skip.
+- **If not found:** `vertical-slices` behaves like every other fragment — pure addition, normal
+  Yes/Skip/Tell-me-more flow, "Never replace or delete existing rules" applies as usual.
+
+This is the only fragment in the catalog with replace logic. Never apply this replace-exception
+pattern to `adr`, `system-architecture`, `program-design`, `branch-naming`,
+`commit-conventions`, `epic-breakdown`, `clarify-step`, or `worktree-workflow`.
+
 ## Step 7: Validate
 
 Run:
@@ -184,3 +210,9 @@ write that produces invalid YAML is a correctness failure. (Prevents Failure 6)
 
 **Omitting the worktree follow-up note:** If `worktree-workflow` is applied, the completion
 report must include the `superpowers:using-git-worktrees` invocation note. (Prevents Failure 7)
+
+**Applying the vertical-slices replace exception to any other fragment:** The replace-exception
+branch in Step 6 applies only to `vertical-slices`. Every other fragment — including the two new
+ones, `system-architecture` and `program-design` — follows the normal additive-only flow: never
+replace or delete an existing rule for any fragment other than `vertical-slices`.
+(Prevents Failure 8)

@@ -8,7 +8,8 @@ The skill must prevent all of them.
 ## Failure 1: No catalog scan — manual guessing
 
 **Without skill:** Agent improvises fragment names and rules based on what "seems right."
-Guesses at config.yaml structure. Misses the canonical fragment set (`adr`, `branch-naming`,
+Guesses at config.yaml structure. Misses the canonical fragment set (`adr`,
+`system-architecture`, `program-design`, `vertical-slices`, `branch-naming`,
 `commit-conventions`, `epic-breakdown`, `clarify-step`, `worktree-workflow`).
 
 **Expected behavior:** Read `skills/schema-config/references/fragments.md` at skill start.
@@ -81,3 +82,14 @@ but gives no guidance on how to use it.
 **Expected behavior:** The completion report must include the follow-up note:
 "Added worktree rules. To use: invoke `superpowers:using-git-worktrees` before your
 next `/opsx:apply`."
+
+---
+
+## Failure 8: No replace-exception handling — vertical-slices silently stacks a contradictory rule
+
+**Without skill:** Agent adds the new vertical-slice rule alongside the old stub-first rule with
+no warning, leaving both active and contradictory.
+
+**Expected behavior:** Detect the old stub-first rule text verbatim before writing
+`vertical-slices`. Present the Replace it / Keep both / Skip this fragment choice, and surface
+the conflict explicitly in the completion report if both are kept.
