@@ -82,19 +82,35 @@ Additional signals to check:
 ls openspec/config.yaml openspec/specs/ .claude/commands/opsx/ 2>/dev/null || true
 ```
 
-### Check 6b: Architecture / Program Design / Vertical-slice rule status
+### Check 6b: Fragment catalog status
 
 Read `openspec/config.yaml` if it exists (skip this check entirely if it doesn't — Check 6
-already reports config.yaml as missing). Apply the same Detection criteria as the
-`system-architecture`, `program-design`, and `vertical-slices` fragments in
-`skills/schema-config/references/fragments.md`:
+already reports config.yaml as missing). Read
+`skills/schema-config/references/fragments.md` — the same catalog `/schema-config` uses — and
+apply **every** fragment's own Detection criteria against the existing config.yaml content, in
+catalog order (`adr`, `system-architecture`, `program-design`, `vertical-slices`,
+`branch-naming`, `commit-conventions`, `epic-breakdown`, `clarify-step`, `worktree-workflow`).
+For any fragment whose Detection criteria includes an "OR `<directory>` exists" clause
+(`adr`, `system-architecture`, `program-design`, `worktree-workflow`), also check the
+filesystem:
 
-- **Architecture rules present** — `rules.design` contains the literal string `Include a "## Architecture" section whenever` OR `docs/architecture/` directory exists (check with `ls docs/architecture 2>/dev/null`).
-- **Program Design rules present** — `rules.design` contains the literal string `Include a "## Program Design" section whenever` OR `docs/program-design/` directory exists (check with `ls docs/program-design 2>/dev/null`).
-- **Vertical-slice task ordering** — `rules.tasks` contains "vertical slice". If missing, also check whether `rules.tasks` contains the old stub-first rule text verbatim (`Start each capability group with a stub task...`) — if so, report as conflicting rather than simply missing.
+```bash
+ls docs/adr docs/architecture docs/program-design .worktrees 2>/dev/null
+```
+
+A fragment is Clear if either half of its Detection matches:
+- **Clear** — Detection criteria matched (fragment already configured)
+- **Missing** — Detection criteria not matched (fragment not configured)
+
+Report one row per fragment — this is the full catalog, not a subset.
+
+**`vertical-slices` special case:** if Missing, also check whether `rules.tasks` contains the
+old stub-first rule text verbatim (`Start each capability group with a stub task...`) — if so,
+report as ⚠️ conflicting rather than simply ❌ missing.
 
 This check is read-only: report status only, never offer to apply anything (that's
-`/schema-config`'s job).
+`/schema-config`'s job). Never invent, add, or rename fragments not listed in the catalog —
+`fragments.md` is the single source of truth here exactly as it is for `/schema-config`.
 
 ### Check 7: Agent files status
 ```bash
@@ -168,9 +184,22 @@ this and have a complete picture.
 | `openspec/config.yaml` | ✅ found / ❌ not initialized |
 | `openspec/specs/` | ✅ / ❌ |
 | Claude Code slash commands | ✅ `.claude/commands/opsx/` found / ❌ |
-| Architecture rules | ✅ present / ❌ missing → run `/schema-config` to add |
-| Program Design rules | ✅ present / ❌ missing → run `/schema-config` to add |
-| Vertical-slice task ordering | ✅ present / ⚠️ conflicting (old stub-first rule still active) → run `/schema-config` / ❌ missing → run `/schema-config` to add |
+
+## Fragment Catalog Status
+[One row per fragment in `skills/schema-config/references/fragments.md`, in catalog order —
+all 9, not a subset:]
+
+| Fragment | Status |
+|----------|--------|
+| `adr` | ✅ configured / ❌ not configured → run `/schema-config` to add |
+| `system-architecture` | ✅ configured / ❌ not configured → run `/schema-config` to add |
+| `program-design` | ✅ configured / ❌ not configured → run `/schema-config` to add |
+| `vertical-slices` | ✅ configured / ⚠️ conflicting (old stub-first rule still active) → run `/schema-config` / ❌ not configured → run `/schema-config` to add |
+| `branch-naming` | ✅ configured / ❌ not configured → run `/schema-config` to add |
+| `commit-conventions` | ✅ configured / ❌ not configured → run `/schema-config` to add |
+| `epic-breakdown` | ✅ configured / ❌ not configured → run `/schema-config` to add |
+| `clarify-step` | ✅ configured / ❌ not configured → run `/schema-config` to add |
+| `worktree-workflow` | ✅ configured / ❌ not configured → run `/schema-config` to add |
 
 ## Agent Files
 | File | Status |
@@ -202,12 +231,11 @@ this and have a complete picture.
 - Add apply guard: `Never run /opsx:apply on a working tree with uncommitted changes — commit or stash all pending changes before applying a proposal.`
 - Add sync guard: `Never run /opsx:sync on a working tree with uncommitted changes — commit or stash all pending changes before syncing specs.`
 - Add archive guard: `Never run /opsx:archive on a working tree with uncommitted changes — commit or stash all pending changes before archiving a change.`
-[If Architecture rules are missing:]
-- Add Architecture rules and template: run `/schema-config` and select the `system-architecture` fragment.
-[If Program Design rules are missing:]
-- Add Program Design rules and template: run `/schema-config` and select the `program-design` fragment.
-[If vertical-slice task ordering is missing or conflicting:]
-- Add or resolve vertical-slice task ordering: run `/schema-config` and select the `vertical-slices` fragment (it will offer to replace the old stub-first rule if one is found).
+[For each fragment reported ❌ not configured in Fragment Catalog Status, include one action
+item, e.g.:]
+- Add `<fragment-name>`: run `/schema-config` and select the `<fragment-name>` fragment.
+[If `vertical-slices` is reported ⚠️ conflicting:]
+- Resolve vertical-slice task ordering: run `/schema-config` and select the `vertical-slices` fragment (it will offer to replace the old stub-first rule if one is found).
 
 ---
 _Run `openspec:setup` to handle all of the above interactively._
