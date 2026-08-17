@@ -27,6 +27,92 @@ Content of `docs/adr/0001-template.md`: copy from `skills/schema-config/referenc
 
 ---
 
+## Fragment: system-architecture
+
+**Description:** Adds a required "## Architecture" section to design.md for changes touching more than one service, endpoint, queue, or store — scoped to service/endpoint/schema/queue/store relationships only, produced via the system-architecture-doc skill.
+
+**Detection:** `rules.design` contains "Architecture" section marker OR `docs/architecture/` directory exists.
+
+**config.yaml patch:**
+```yaml
+rules:
+  design:
+    - 'Include a "## Architecture" section whenever the change adds/modifies more than one service, endpoint, queue, or store, or changes how existing ones talk to each other.'
+    - '"## Architecture" covers service/endpoint/schema/queue/store relationships only — no method signatures, call stacks, or file-level detail. That belongs in "## Program Design".'
+    - Use the system-architecture-doc skill to produce this section.
+    - For any change involving more than one service or consumer, include a mermaid sequence diagram showing the request/message flow.
+    - 'For new or changed endpoints, give the contract shape: method, path, request body, response body, status codes, error cases. See docs/architecture/TEMPLATE.md.'
+    - For new or changed data models, show the shape as a diff (added/changed/removed fields) — not prose.
+```
+
+**Files to create:**
+- `docs/architecture/TEMPLATE.md` — copy from `skills/setup/references/architecture-template.md`
+
+---
+
+## Fragment: program-design
+
+**Description:** Adds a required "## Program Design" section to design.md for changes with non-trivial new call flow — call-stack diff tree, file-tree diff, and typed signatures, produced via the program-design-doc skill.
+
+**Detection:** `rules.design` contains "Program Design" section marker OR `docs/program-design/` directory exists.
+
+**config.yaml patch:**
+```yaml
+rules:
+  design:
+    - 'Include a "## Program Design" section whenever the change introduces a non-trivial new call flow, more than ~2 new functions/methods, or changes an existing call flow beyond a one-line edit.'
+    - '"## Program Design" is one level below Architecture: the shape of the code itself, decided before implementation — not the architecture (services/contracts) and not the implementation (bodies).'
+    - Use the program-design-doc skill to produce this section.
+    - 'Give a call-stack diff tree for any control-flow change — use diff syntax (+/-) when only part of the stack is changing. See docs/program-design/TEMPLATE.md.'
+    - Give a file-tree diff showing what's new/modified, with a one-line reason per entry.
+    - Give fully-typed method/function signatures (not bodies) for every new or changed function that crosses a module boundary.
+```
+
+**Files to create:**
+- `docs/program-design/TEMPLATE.md` — copy from `skills/setup/references/program-design-template.md`
+
+---
+
+## Fragment: vertical-slices
+
+**Description:** Replaces the horizontal stub-first task ordering with vertical-slice ordering — each capability group's tasks progress contract → consumer → real service → data → logic → errors, each independently testable, produced via the vertical-slice-planner skill.
+
+**Detection:** `rules.tasks` contains "vertical slice" (Missing state) — plus the replace-exception check below, which only runs when Missing.
+
+**config.yaml patch:**
+```yaml
+rules:
+  tasks:
+    - 'Order tasks as vertical slices, not by architectural layer: (1) contract + mock data, verified with curl or equivalent, (2) frontend or consumer against the mock, iterated directly, (3) wire the real service behind the still-mocked boundary, (4) migrations and real data wiring, (5) business logic, (6) error handling. Each slice must be independently testable/touchable before the next begins.'
+    - 'Never group tasks as "all models" → "all services" → "all serializers" → "all endpoints." A capability group''s tasks must each be individually runnable/verifiable, not stubs waiting on later groups.'
+    - Use the vertical-slice-planner skill to produce the task breakdown.
+```
+
+**Files to create:** none
+
+**Replace exception (this is the only fragment in the catalog with replace logic — do not apply this pattern to any other fragment):**
+
+Before presenting this fragment normally, check whether `rules.tasks` contains the old
+stub-first rule text verbatim: `Start each capability group with a stub task — typed
+model/service/serializer skeletons — before behavior tasks.`
+
+- **If found:** do not use the normal Yes/Skip/Tell-me-more flow. Instead present:
+  > "Your project has the old stub-first task rule (`Start each capability group with a stub
+  > task...`), which conflicts with vertical-slice ordering. Replace it with the vertical-slice
+  > rule?"
+  >
+  > AskUserQuestion: **Replace it / Keep both (not recommended) / Skip this fragment**
+  - **Replace it** → remove the old rule line, add the new `vertical-slices` rules, and note the
+    replacement explicitly in the completion report:
+    `openspec/config.yaml ← 1 rule replaced (tasks: stub-first → vertical-slice ordering)`
+  - **Keep both** → add the new rules alongside the old one, but the completion report must warn:
+    "Both the old stub-first rule and the new vertical-slice rule are now active — these
+    conflict. Recommend manually removing the stub-first rule."
+  - **Skip this fragment** → no change, same as any other Skip.
+- **If not found:** behave like every other fragment — pure addition, normal Yes/Skip/Tell-me-more flow.
+
+---
+
 ## Fragment: branch-naming
 
 **Description:** Enforces a two-phase branch model — spec branches for OpenSpec planning work, implementation branches for applying specs via `/opsx:apply`.
