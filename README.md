@@ -164,11 +164,13 @@ claude plugin install openspec-setup@<registry>
 
 ```
 openspec-setup-plugin/
+├── .claude-plugin/plugin.json
 ├── agents/
 │   ├── openspec-expert.md           ← expert agent definition
 │   ├── codebase-locator.md          ← ported research subagent (finds WHERE code lives)
 │   ├── codebase-analyzer.md         ← ported research subagent (explains HOW code works)
 │   └── codebase-pattern-finder.md   ← ported research subagent (finds similar patterns)
+├── .agents/                        ← legacy mirror of agents/, kept byte-identical (compatibility only)
 ├── skills/
 │   ├── setup/
 │   │   ├── SKILL.md                 ← full wizard
