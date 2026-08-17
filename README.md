@@ -57,6 +57,50 @@ Creates or improves the AI agent instruction files:
 
 ---
 
+### `system-architecture-doc` — Architecture Section Writer
+
+Grounds design.md's "## Architecture" section in the actual codebase (via the ported
+`codebase-locator`/`codebase-analyzer`/`codebase-pattern-finder` subagents and `openspec-expert`),
+presents 2-3 architecture options with trade-offs, gets explicit buy-in, then writes the section
+scoped strictly to service/endpoint/schema/queue/store relationships — mermaid sequence diagram,
+endpoint contracts, and data model diffs.
+
+**Trigger examples**:
+- "write the architecture section"
+- "design.md Architecture section"
+- "document the system architecture for this change"
+- "add a sequence diagram for this change"
+
+---
+
+### `program-design-doc` — Program Design Section Writer
+
+Decides the shape of the code — call-stack diff tree, file-tree diff, typed signatures — before
+implementation begins, through a context-gather → outline → detail flow. One level below
+Architecture; never writes services/endpoints or implementation bodies.
+
+**Trigger examples**:
+- "write the program design section"
+- "design.md Program Design section"
+- "plan the call stack for this change"
+- "give typed signatures before implementing"
+
+---
+
+### `vertical-slice-planner` — Vertical-Slice Task Ordering
+
+Breaks each capability group's tasks.md entries into six vertically-ordered,
+independently-testable slices (contract+mock → consumer → real service → data → logic → errors)
+instead of horizontal architectural layers, with an Automated/Manual Verification split and an
+explicit pause point after each slice.
+
+**Trigger examples**:
+- "order these tasks"
+- "break this into vertical slices"
+- "plan the task breakdown"
+
+---
+
 ### `openspec:figma` — Figma Integration (Setup + Day-to-day Workflow)
 
 Single entry point for Figma integration. Covers both one-time project setup (detect tier, install MCP,
@@ -120,12 +164,19 @@ claude plugin install openspec-setup@<registry>
 
 ```
 openspec-setup-plugin/
-├── .claude-plugin/plugin.json
-├── .agents/
-│   └── openspec-expert.md           ← expert agent definition
+├── agents/
+│   ├── openspec-expert.md           ← expert agent definition
+│   ├── codebase-locator.md          ← ported research subagent (finds WHERE code lives)
+│   ├── codebase-analyzer.md         ← ported research subagent (explains HOW code works)
+│   └── codebase-pattern-finder.md   ← ported research subagent (finds similar patterns)
 ├── skills/
 │   ├── setup/
-│   │   └── SKILL.md                 ← full wizard
+│   │   ├── SKILL.md                 ← full wizard
+│   │   └── references/
+│   │       ├── config-best-practices.md   ← config.yaml rule reference (incl. Architecture/Program Design/vertical-slice groups)
+│   │       ├── architecture-template.md   ← canonical Architecture section template
+│   │       ├── program-design-template.md ← canonical Program Design section template
+│   │       └── research-notes-backend.md  ← shared hlyr/local research-notes detection
 │   ├── audit/
 │   │   ├── SKILL.md                 ← standalone audit
 │   │   └── references/
@@ -135,6 +186,16 @@ openspec-setup-plugin/
 │   │   ├── SKILL.md                 ← generator / reviewer
 │   │   └── references/
 │   │       └── quality-criteria.md  ← CLAUDE.md review checklist
+│   ├── schema-config/
+│   │   ├── SKILL.md                 ← workflow fragment configurator
+│   │   └── references/
+│   │       └── fragments.md         ← fragment catalog (incl. system-architecture, program-design, vertical-slices)
+│   ├── system-architecture-doc/
+│   │   └── SKILL.md                 ← Architecture section writer
+│   ├── program-design-doc/
+│   │   └── SKILL.md                 ← Program Design section writer
+│   ├── vertical-slice-planner/
+│   │   └── SKILL.md                 ← vertical-slice task ordering
 │   └── figma/
 │       ├── SKILL.md                 ← setup + day-to-day Figma workflow (unified)
 │       └── references/

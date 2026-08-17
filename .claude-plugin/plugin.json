@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "openspec-setup",
   "displayName": "OpenSpec Setup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Skills to set up OpenSpec (spec-driven development) in any project — greenfield or brownfield. Covers environment audit, CLAUDE.md and Copilot instructions generation, guided OpenSpec initialization, and Figma design-system integration. Targets Claude Code and GitHub Copilot.",
   "author": {
     "name": "Jérémie Poutrin",
