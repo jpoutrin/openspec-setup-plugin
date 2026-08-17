@@ -495,7 +495,7 @@ just installed. Instead close with:
 - ✅ Audit completed — [N action items identified]
 - ✅ CLAUDE.md [created / improved]
 - ✅ .github/copilot-instructions.md [created / improved]
-- ➖ OpenSpec: already configured — config.yaml and pre-commit hook untouched (see Phase 1 findings)
+- ➖ OpenSpec: already configured — config.yaml, Fragment catalog, and pre-commit hook untouched (see Phase 1 findings)
 
 ### Your next steps
 1. [Install LSP if flagged — exact command]
@@ -513,6 +513,7 @@ Otherwise, close with a clear wrap-up:
 - ✅ CLAUDE.md [created / improved]
 - ✅ .github/copilot-instructions.md [created / improved]
 - ✅ OpenSpec [installed / confirmed] and initialized
+- ✅ Fragment catalog and clean-repo guard rules written to config.yaml
 - ✅ git pre-commit hook installed — blocks commits on compile failure or test failure
 
 ### Your next steps

@@ -56,6 +56,10 @@ without asking the same questions a developer would ask on day one.
 - [ ] `openspec/specs/` mentioned as the source of truth
 - [ ] Key commands noted (`/opsx:propose`, `/opsx:apply`, `/opsx:archive`)
 - [ ] Change workflow briefly described
+- [ ] If `openspec/config.yaml` exists, read its `context:` and `rules:` for anything with a
+      CLAUDE.md-relevant equivalent (a typing-strictness rule, a commit-format rule, a
+      branch-naming rule, a test-location convention) — CLAUDE.md's Conventions section should
+      state the same thing, not something that contradicts it. Flag any mismatch as a gap.
 
 ---
 

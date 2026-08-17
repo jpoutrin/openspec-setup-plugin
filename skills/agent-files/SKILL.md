@@ -38,6 +38,8 @@ missing one — handle both in one pass.
 ## Review Mode
 
 Read all existing files in full, then evaluate them against `references/quality-criteria.md`.
+If `openspec/config.yaml` exists, read it too — `quality-criteria.md`'s OpenSpec-specific section
+checks CLAUDE.md's Conventions against it for contradictions.
 
 Think about what a new agent would understand (or misunderstand) if it only had this file to go on.
 The gaps that matter most are missing commands, vague conventions, and absent off-limits sections —

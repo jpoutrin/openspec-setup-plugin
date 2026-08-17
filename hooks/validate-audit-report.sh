@@ -20,6 +20,7 @@ REQUIRED=(
   "Apply guard rule"
   "Sync guard rule"
   "Archive guard rule"
+  "## Fragment Catalog Status"
   "## Action Items"
 )
 

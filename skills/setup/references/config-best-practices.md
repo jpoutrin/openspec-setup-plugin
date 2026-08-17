@@ -1,5 +1,10 @@
 # OpenSpec config.yaml — Best Practices
 
+**Before adding or changing a "canonical, always include" rule, read
+`skills/schema-config/references/propagation-checklist.md`** — canonical rules are mirrored into
+`skills/schema-config/references/fragments.md` by design, and it's easy to update one and
+silently miss the other.
+
 Reference for generating or reviewing `openspec/config.yaml`. Use this when:
 - Helping an engineer populate the file after `openspec init`
 - Reviewing an existing config.yaml for quality or completeness
@@ -335,6 +340,8 @@ Elixir:
 - [ ] Specs rules enforce SHALL/MUST and Scenario format
 - [ ] Tasks rules pair code with tests and end each group with verification
 - [ ] Tasks rules include the clean-repo guards for apply, sync, and archive (`Never run /opsx:apply / /opsx:sync / /opsx:archive on a working tree with uncommitted changes`)
+- [ ] Design rules include the independently-gated Architecture and Program Design subsections (not just the base `design:` list) — see the "Architecture subsection" and "Program Design subsection" blocks above
+- [ ] Tasks rules use vertical-slice ordering (contract → consumer → real service → data → logic → errors), not the old layer-first stub rule
 
 **Common mistakes to avoid**
 - Aspirational rules ("write clean code", "keep it simple") — too vague to enforce

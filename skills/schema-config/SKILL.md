@@ -18,7 +18,7 @@ them one at a time, and write everything in a single confirmed pass.
 
 ## Step 1: Load Fragment Catalog
 
-Read `~/.claude/skills/schema-config/references/fragments.md`.
+Read `skills/schema-config/references/fragments.md`.
 
 This file is the single source of truth for all fragments. Do not invent, add, or rename
 fragments not listed in the catalog. Each `## Fragment: <name>` section contains four
@@ -200,7 +200,7 @@ Follow-up:
 ## Common Mistakes
 
 **Writing from memory instead of reading the catalog:** Always read
-`~/.claude/skills/schema-config/references/fragments.md` at skill start. Do not use mentally
+`skills/schema-config/references/fragments.md` at skill start. Do not use mentally
 recalled fragment names, rules, or patches — the catalog is the single source of truth. (Prevents Failure 1)
 
 **Re-adding already-configured fragments:** Run the Detection scan (Step 2) before presenting

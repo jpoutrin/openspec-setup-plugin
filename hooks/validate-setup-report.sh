@@ -19,6 +19,7 @@ REQUIRED=(
   "### Your next steps"
   "pre-commit hook"
   "config.yaml"
+  "Fragment catalog"
 )
 
 MISSING=()

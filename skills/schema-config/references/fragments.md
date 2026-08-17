@@ -3,6 +3,10 @@
 Each fragment is a workflow convention that can be added to a project's `openspec/config.yaml`.
 The skill reads this file to discover what to offer and how to apply each fragment.
 
+**Before adding or changing a fragment, read
+`skills/schema-config/references/propagation-checklist.md`** — fragment content is duplicated
+across several other files by design, and it's easy to update one and silently miss another.
+
 ---
 
 ## Fragment: adr
