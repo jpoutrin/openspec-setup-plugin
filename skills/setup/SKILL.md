@@ -288,6 +288,18 @@ openspec/
 After init, the generated `config.yaml` has a minimal `context:` block and no `rules:`. Guide the
 engineer through completing it using `skills/setup/references/config-best-practices.md`.
 
+**Step 3, pre-interview — create canonical templates (always, unconditional):**
+
+```bash
+mkdir -p docs/architecture docs/program-design
+[ -f docs/architecture/TEMPLATE.md ] || cp "${CLAUDE_PLUGIN_ROOT}/skills/setup/references/architecture-template.md" docs/architecture/TEMPLATE.md
+[ -f docs/program-design/TEMPLATE.md ] || cp "${CLAUDE_PLUGIN_ROOT}/skills/setup/references/program-design-template.md" docs/program-design/TEMPLATE.md
+```
+
+Unlike `adr` (fragment-only/opt-in), these two templates are canonical defaults for every new
+project — always create them. Skip creation if the file already exists (same "already exists —
+not overwritten" behavior as every other file-creation step in this plugin).
+
 Conduct a brief interview — one question at a time:
 
 1. _"What does this service/project do, in one sentence? (business purpose, not tech stack)"_
@@ -302,7 +314,12 @@ conventions only if there is a non-trivial frontend layer).
 
 For the `rules:` section, apply the canonical rules from `config-best-practices.md` as the base,
 then add any stack-specific rules that apply to the detected project type. Prefer rules that reference
-the project's actual tools (e.g., `make test` not `npm test` for a Python/Make project).
+the project's actual tools (e.g., `make test` not `npm test` for a Python/Make project). The
+`design:` rules now come in three independently-gated groups — the base rules, the Architecture
+subsection, and the Program Design subsection — include all three verbatim from
+`config-best-practices.md`; each is triggered by its own condition, not by a flat list. The
+`tasks:` rules include the vertical-slice ordering rule (contract → consumer → real service →
+data → logic → errors) in place of the old stub-first rule.
 
 **Typing rule (mandatory for weakly typed languages):** If Phase 1 detected Python, JavaScript (without
 TypeScript), PHP, Ruby, or Elixir, you MUST automatically include the matching typing rules from
@@ -322,6 +339,14 @@ default for weakly typed languages and should be present unless the engineer exp
 ```
 
 Do not ask the engineer whether to include these — they prevent irreversible state corruption and must always be present.
+
+Before showing the generated file, say once:
+
+> "I'm also adding three rules that keep AI-generated changes reviewable before code is written:
+> an Architecture section for multi-service changes, a Program Design section for non-trivial
+> new code shape, and vertical-slice task ordering instead of layer-by-layer stubs. Each is
+> scoped to when it's actually needed — see docs/architecture/TEMPLATE.md and
+> docs/program-design/TEMPLATE.md for the format."
 
 Show the full generated `config.yaml` and ask: _"Does this look right? I can adjust any section before writing."_
 
