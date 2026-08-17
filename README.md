@@ -191,7 +191,8 @@ openspec-setup-plugin/
 │   ├── schema-config/
 │   │   ├── SKILL.md                 ← workflow fragment configurator
 │   │   └── references/
-│   │       └── fragments.md         ← fragment catalog (incl. system-architecture, program-design, vertical-slices)
+│   │       ├── fragments.md         ← fragment catalog (incl. system-architecture, program-design, vertical-slices)
+│   │       └── propagation-checklist.md  ← what to update when a fragment/rule changes
 │   ├── system-architecture-doc/
 │   │   └── SKILL.md                 ← Architecture section writer
 │   ├── program-design-doc/
