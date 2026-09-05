@@ -1,6 +1,6 @@
-# ADR-[NUMBER]-[CONCISE DECISION TITLE]
+# [AAAA-MM-JJ] — [CONCISE DECISION TITLE]
 
-* Status : [proposed | rejected | accepted | deprecated | … | replaced by [ADR-0005](0005-example.md)]
+* Status : [proposed | rejected | accepted | deprecated | … | replaced by [2026-11-02-move-to-aurora](2026-11-02-move-to-aurora.md)]
 * Date : [AAAA-MM-JJ de la dernière mise à jour de la décision]
 
 ## 👥 Stakeholders

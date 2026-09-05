@@ -22,12 +22,15 @@ rules:
     - Link to the relevant ADR in docs/adr/ when a significant architectural decision is made.
   tasks:
     - Create an ADR in docs/adr/ for any decision that affects system architecture or is hard to reverse.
+    - Name ADR files `docs/adr/AAAA-MM-JJ-<kebab-slug>.md`, dated the day the decision is accepted. Reference other ADRs by relative link, never by number.
 ```
 
 **Files to create:**
-- `docs/adr/0001-template.md` — standard ADR template
+- `docs/adr/template.md` — standard ADR template
 
-Content of `docs/adr/0001-template.md`: copy from `skills/schema-config/references/adr-template.md`
+Content of `docs/adr/template.md`: copy from `skills/schema-config/references/adr-template.md`
+
+**When applying:** if `docs/adr/` already contains numbered ADRs, keep the project's existing convention and do not rename existing files.
 
 ---
 
